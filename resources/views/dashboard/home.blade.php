@@ -1,6 +1,9 @@
-@include('layouts.header',['title'=>'Ads Accounts']) 
+@include('layouts.header',['title'=>'Ads Accounts'])
 
-  
+@if(!isset(Auth::user()->email))
+    <script>window.location.href = '{{route("/")}}';</script>
+@endif
+
            <!-- main -->
             <main>
                 <div class="container-fluid">
@@ -148,7 +151,7 @@
 
 
                     </div>
-                   
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="top-breadcrumb">
@@ -193,7 +196,7 @@
                                                     <th><i class="fas fa-cog"></i></th>
                                                 </tr>
                                             </thead>
-                                            
+
                                             <tbody>
                                                 <tr>
                                                     <td>
@@ -297,7 +300,7 @@
                     </select>
                 </div>
             </div>
-        
+
         </form>
       </div>
       <div class="modal-footer">
@@ -306,7 +309,7 @@
       </div>
     </div>
   </div>
-</div> 
+</div>
 
 
 <!-- Add About Application -->
@@ -328,9 +331,9 @@
       <div class="card-body ">
         <div class="text-center">
             <img src="https://lh3.googleusercontent.com/UG2AXoHnsEeretioeOLIM41w5j_1g8UT6XianicribaFo1d38uMSWWHmieMx7F_6XYVe=s360" alt="" class="user-profile" style=" height: 80px; border-radius: 50%;">
-            <p>GB Whatsapp Latest Version - amizng version gb</p>  
-            <p>12 Days</p>   
-            <p><span class="badge badge-success">Active</span></p>            
+            <p>GB Whatsapp Latest Version - amizng version gb</p>
+            <p>12 Days</p>
+            <p><span class="badge badge-success">Active</span></p>
         </div>
             <div class="slimScroll">
                 <div class="activity-timeline">
@@ -499,7 +502,7 @@
                             <span class="activity-timeline-badge activity-timeline-badge-success"></span>
                             <span class="activity-timeline-text"><span style="color:#584399">MEDIUM_RECTANGLE_FACEBOOK  -> </span> XXXXXX-XXXXXXXX</span>
                         </div>
-                                               
+
                     </div>
                 </div>
             </div>
@@ -510,7 +513,7 @@
       </div>
     </div>
   </div>
-</div> 
+</div>
 
 
 
@@ -533,4 +536,4 @@
       </div>
     </div>
   </div>
-</div> 
+</div>

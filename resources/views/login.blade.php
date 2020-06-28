@@ -1,5 +1,9 @@
 @include('layouts.header',['title'=>'Login'])
 
+@if(isset(Auth::user()->email))
+    <script>window.location.href = '{{route("home")}}';</script>
+@endif
+
 <body class="login">
     <div id="loader-wrapper">
         <div id="loader"></div>
@@ -27,23 +31,47 @@
 
                     <h3 class="mb-3">Login to Mobile LM</h3>
                     <p>Login using your Mobile LM account</p>
-                    <form>
+                    <form method="POST" action="{{ route('login') }}">
+                        @csrf
                         <div class="form-group">
-                            <label >Email address</label>
-                            <input type="text" required="" class="form-control">
+                            <label >{{ __('E-Mail Address') }}</label>
+                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                            @error('email')
+                            <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
                         </div>
                         <div class="form-group">
-                            <label >Password</label>
-                            <input type="text" required="" class="form-control">
+                            <label >{{ __('Password') }}</label>
+                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+
+                            @error('password')
+                            <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+
+                                    <label class="form-check-label" for="remember">
+                                        {{ __('Remember Me') }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sign-btn ">
+                            <button type="submit" class="btn-theme btn-theme-primary mb-4">
+                                {{ __('Login') }}
+                            </button>
                         </div>
                     </form>
-                    <div class="sign-btn ">
-                        <a href="index.html" class="btn-theme btn-theme-primary mb-4">
-                            Sign in
-                        </a>
-                    </div>
                 </div>
                 <!-- End Form -->
+
             </div>
             <!-- End Right Content -->
         </div>

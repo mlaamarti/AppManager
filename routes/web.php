@@ -11,11 +11,17 @@
 |
 */
 
+Auth::routes();
+
+
+
 // Login
 Route::get('/', function () {
     return view('login');
 })->name('/');
 
+// logout
+Route::get('/logout', 'Auth\LoginController@logout');
 
 // page Error 404
 Route::get('/404', function () {
@@ -38,4 +44,5 @@ Route::get('/accounts', function () {
 Route::get('/ads-manager', function () {
     return view('dashboard.ads_manager.ads-manager');
 })->name('ads-manager');
+
 
