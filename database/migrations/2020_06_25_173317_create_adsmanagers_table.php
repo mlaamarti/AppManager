@@ -15,20 +15,22 @@ class CreateAdsmanagersTable extends Migration
     {
         Schema::create('adsmanagers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_application');
-            $table->string('id_admob')->unique();
-            $table->string('ads_text_admob');
-            $table->string('banner_admob')->unique();
-            $table->string('interstitial_admob')->unique();
-            $table->string('native_admob')->unique();
-            $table->string('reward_admob')->unique();
-            $table->string('banner_facebook')->unique();
-            $table->string('interstitial_facebook')->unique();
-            $table->string('native_facebook')->unique();
-            $table->string('native_banner_facebook')->unique();
-            $table->string('medium_rectangle_facebook')->unique();
+            $table->unsignedBigInteger('id_application')->unique();
+            $table->string('id_admob')->nullable();
+            $table->string('ads_text_admob')->nullable();
+            $table->string('banner_admob')->nullable();
+            $table->string('interstitial_admob')->nullable();
+            $table->string('native_admob')->nullable();
+            $table->string('reward_admob')->nullable();
+            $table->string('banner_facebook')->nullable();
+            $table->string('interstitial_facebook')->nullable();
+            $table->string('native_facebook')->nullable();
+            $table->string('native_banner_facebook')->nullable();
+            $table->string('medium_rectangle_facebook')->nullable();
             $table->unsignedBigInteger('id_admob_acc');
             $table->unsignedBigInteger('id_facebook_acc');
+            $table->integer("fillrate_admob")->nullable();;
+            $table->integer("fillrate_facebook")->nullable();;
             $table->string('type');
             $table->boolean('status');
             $table->timestamps();

@@ -3,15 +3,17 @@
 
 <head>
     <meta charset="utf-8" />
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name') }} -   @if(isset($title)) {{ $title }} @endif </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{URL::asset('/images/favicon.png')}}">
+    <link rel="shortcut icon" href="{{URL::asset('/images/favicon.svg')}}">
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{URL::asset('/images/favicon.ico')}}">
+    <link rel="shortcut icon" href="{{URL::asset('/images/favicon.svg')}}">
 
     <!-- Style Css -->
     <link rel="stylesheet" href="{{URL::asset('plugins/font-awesome/css/all.css')}}" >
@@ -23,6 +25,10 @@
     <link rel="stylesheet" href="{{URL::asset('css/colors.css')}}">
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 
+    @if(Route::currentRouteName() == 'ads-manager' || Route::currentRouteName() == 'myads')
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    @endif
+
     <!-- Font Family Css -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -30,15 +36,18 @@
         th,td,tr{
             text-align:  center !important;
         }
-
-
     </style>
 
 </head>
 
 <body @if(Route::currentRouteName() == '/') class="login" @endif >
 
-@if(Route::currentRouteName() == 'home' || Route::currentRouteName() == 'accounts' || Route::currentRouteName() == 'ads-manager')
+@if(Route::currentRouteName() == 'home' || Route::currentRouteName() == 'accounts' || Route::currentRouteName() == 'ads-manager' || Route::currentRouteName() == 'myads')
+
+    @if(!isset(Auth::user()->email))
+        <script>window.location.href = '{{route("/")}}';</script>
+    @endif
+
 <!-- loader -->
 <div id="loader-wrapper">
       <div id="loader"></div>
@@ -114,6 +123,16 @@
                                   <i class="fab fa-adversal"></i>
                               </span>
                               <span class="nav-title">Ads Manager</span>
+                          </a>
+                      </li>
+
+                      <!-- BEGIN: ui -->
+                      <li @if(Route::currentRouteName() == 'myads') class="active" @endif>
+                          <a href="/my-ads">
+                              <span class="nav-icon">
+                                 <i class="fas fa-syringe"></i>
+                              </span>
+                              <span class="nav-title">My Ads</span>
                           </a>
                       </li>
                       <!-- END: ui -->

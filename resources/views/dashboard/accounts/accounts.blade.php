@@ -23,6 +23,15 @@
         </div>
         <div class="row">
             <div class="col-md-12">
+                <!--- Start Success --->
+                @if (session('success_delete'))
+                    <div class="alert alert-success alert-dismissible fade show alert-lm" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                        </button>
+                        {!! session('success_delete') !!}
+                    </div>
+                @endif
                 <div class="card">
                     <div class="card-body">
                         <h5>Accounts Details</h5>
@@ -42,25 +51,30 @@
                                 </thead>
 
                                 <tbody>
+
+                                @foreach($accs as $acc)
                                 <tr>
                                     <td>
-                                        <span class="badge badge-danger">Suspend</span>
+                                        @if($acc->status == 0)<span class="badge badge-danger">Suspend</span>@endif
+                                        @if($acc->status == 1) <span class="badge badge-success">Active</span>@endif
                                     </td>
-                                    <td>laamarti.lm.93@gmail.com</td>
-                                    <td>Facebook</td>
-                                    <td>Morocco</td>
-                                    <td>123.23.23.23</td>
-                                    <td>2008/11/28</td>
-                                    <td>2008/11/28</td>
-                                    <td>
-                                        <button class="flat-btn flat-btn-info btn bg-blue" data-toggle="modal" data-target="#edit_account" >
+                                    <td>{{$acc->email}}</td>
+                                    <td>{{$acc->type}}</td>
+                                    <td>{{$acc->country}}</td>
+                                    <td>{{$acc->ip}}</td>
+                                    <td>{{date('d-m-Y', strtotime($acc->created_at))}}
+                                    </td>
+                                    <td>{{date('d-m-Y', strtotime($acc->updated_at))}}</td>
+                                    <td data-id="{{$acc->id}}">
+                                        <button class="flat-btn flat-btn-info btn bg-blue edit_account" data-toggle="modal" data-target="#edit_account">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="flat-btn flat-btn-warning btn bg-danger" data-color="yellow" data-toggle="modal" data-target="#delete_account">
+                                        <button class="flat-btn flat-btn-warning btn bg-danger delete_account" data-color="yellow" data-toggle="modal" data-target="#delete_account">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </td>
                                 </tr>
+                                @endforeach
                                 </tbody>
                                 <tfoot>
                                 <tr>
@@ -101,38 +115,63 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form>
+                <form action="{{route('account.store')}}" method="post">
+                    @csrf
+
+                    <!--- Start Error --->
+                        @if (session('errors'))
+                            <div class="alert alert-danger alert-dismissible fade show alert-lm" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                </button>
+                                @foreach (session('errors') as $errors)
+                                    {!! $errors !!} <br>
+                                @endforeach
+
+                            </div>
+                        @endif
+
+                    <!--- Start Success --->
+                        @if (session('success'))
+                            <div class="alert alert-success alert-dismissible fade show alert-lm" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                                </button>
+                                {!! session('success') !!}
+                            </div>
+                        @endif
+
                     <div class="form-group row">
                         <label for="Email" class="col-sm-3 col-form-label">Email</label>
                         <div class="col-sm-9">
-                            <input type="email" class="form-control" id="Email" placeholder="exemple@exemple.com">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="exemple@exemple.com" required>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="Ip" class="col-sm-3 col-form-label">Email</label>
+                        <label for="ip" class="col-sm-3 col-form-label">Ip</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="Ip" placeholder="127.0.0.1">
+                            <input type="text" class="form-control" id="ip"  name="ip" placeholder="127.0.0.1" minlength="7" maxlength="15" size="15" pattern="^((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$" required>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label for="TypeAccount" class="col-sm-3 col-form-label">Type</label>
                         <div class="col-sm-9">
-                            <select class="form-control" id="TypeAccount">
-                                <option>Type Account</option>
-                                <option>Console Developer</option>
-                                <option>Facebook</option>
-                                <option>Admob</option>
+                            <select class="form-control" name="type" required>
+                                <option value="">Type Account</option>
+                                <option value="Console Developer">Console Developer</option>
+                                <option value="Facebook">Facebook</option>
+                                <option value="Admob">Admob</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="TypeApplication" class="col-sm-3 col-form-label">Console Developer</label>
+                        <label for="TypeApplication" class="col-sm-3 col-form-label">Country</label>
                         <div class="col-sm-9">
-                            <select class="form-control" id="TypeApplication">
-                                <option>Select Country</option>
+                            <select class="form-control" id="country" name="country" required>
+                                <option value="">Select Country</option>
                                 <option value="Afghanistan">Afghanistan</option>
                                 <option value="Åland Islands">Åland Islands</option>
                                 <option value="Albania">Albania</option>
@@ -377,16 +416,15 @@
                                 <option value="Yemen">Yemen</option>
                                 <option value="Zambia">Zambia</option>
                                 <option value="Zimbabwe">Zimbabwe</option>
-                            </select>
+                            </select >
                         </div>
                     </div>
-
-                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Add New Account</button>
+                <button type="submit" class="btn btn-primary">Add New Account</button>
             </div>
+            </form>
         </div>
     </div>
 </div>
@@ -408,38 +446,64 @@
                 </style>
             </div>
             <div class="modal-body">
-                <form>
+                <form action="{{route('account.update')}}" method="post">
+                @csrf
+
+                <!--- Start Error --->
+                    @if (session('errors_edit'))
+                        <div class="alert alert-danger alert-dismissible fade show alert-lm" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                            </button>
+                            @foreach (session('errors_edit') as $errors)
+                                {!! $errors !!} <br>
+                            @endforeach
+
+                        </div>
+                    @endif
+
+                <!--- Start Success --->
+                    @if (session('success_edit'))
+                        <div class="alert alert-success alert-dismissible fade show alert-lm" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true"><i class="fas fa-times"></i></span>
+                            </button>
+                            {!! session('success_edit') !!}
+                        </div>
+                    @endif
                     <div class="form-group row">
                         <label for="Email" class="col-sm-3 col-form-label">Email</label>
                         <div class="col-sm-9">
-                            <input type="email" class="form-control" id="Email" placeholder="exemple@exemple.com">
+                            <input type="hidden" class="form-control" id="id" name="id" value="{{ old('id') }}">
+                            <input type="email" class="form-control" id="email_edit" name="email" placeholder="exemple@exemple.com" value="{{ old('email') }}">
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label for="Ip" class="col-sm-3 col-form-label">Ip</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="Ip" placeholder="127.0.0.1">
+                            <input type="text" class="form-control" id="ip_edit" name="ip" placeholder="127.0.0.1" value="{{ old('ip') }}">
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label for="TypeAccount" class="col-sm-3 col-form-label">Type</label>
                         <div class="col-sm-9">
-                            <select class="form-control" id="TypeAccount">
-                                <option>Type Account</option>
-                                <option>Console Developer</option>
-                                <option>Facebook</option>
-                                <option>Admob</option>
+                            <select class="form-control" id="type_edit" name="type">
+                                <option value="{{ old('type') }}">{{ old('type') }}</option>
+                                <option value="Console Developer">Console Developer</option>
+                                <option value="Facebook">Facebook</option>
+                                <option value="Admob">Admob</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="TypeApplication" class="col-sm-3 col-form-label">Console Developer</label>
+                        <label for="TypeApplication" class="col-sm-3 col-form-label">Country</label>
                         <div class="col-sm-9">
-                            <select class="form-control" id="TypeApplication">
-                                <option>Select Country</option>
+                            <select class="form-control" id="country_edit" name="country">
+
+                                <option value="country">{{ old('country') }}</option>
                                 <option value="Afghanistan">Afghanistan</option>
                                 <option value="Åland Islands">Åland Islands</option>
                                 <option value="Albania">Albania</option>
@@ -693,13 +757,13 @@
                             <label class="col-form-label col-sm-3 pt-0">Status</label>
                             <div class="col-sm-9">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="active" checked="">
+                                    <input class="form-check-input" type="radio" name="status" id="radio-20" value="1"  @if(old('status') == 1) checked @endif>
                                     <label class="form-check-label" for="gridRadios1">
                                         Active
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="suspend">
+                                    <input class="form-check-input" type="radio" name="status" id="radio-21" value="0" @if(old('status') == 0) checked @endif>
                                     <label class="form-check-label" for="gridRadios2">
                                         Suspend
                                     </label>
@@ -707,13 +771,12 @@
                             </div>
                         </div>
                     </fieldset>
-
-                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Update Account</button>
+                <button type="submit" class="btn btn-primary">Update Account</button>
             </div>
+            </form>
         </div>
     </div>
 </div>
@@ -734,9 +797,27 @@
                 <p>Are you sure you want to delete ?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger">Delete</button>
+                <form action="{{route('account.destroy')}}" method="post">
+                    @csrf
+                    <input type="hidden" name="id" id="id_delete">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+
+
+@if (session('success') || session('errors'))
+    <script>
+        $('#add_new_account').modal('show');
+    </script>
+@endif
+
+@if (session('errors_edit') || session('success_edit'))
+    <script>
+        $('#edit_account').modal('show');
+    </script>
+@endif

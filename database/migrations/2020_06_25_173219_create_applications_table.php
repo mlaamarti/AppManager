@@ -27,6 +27,8 @@ class CreateApplicationsTable extends Migration
             $table->string('currentVersion');
             $table->longText('description');
             $table->boolean('status');
+            $table->boolean('ad_status');
+            $table->boolean('is_suspend');
             $table->timestamps();
             $table->foreign('id_account')->references('id')->on('accounts')->onDelete('cascade');
 

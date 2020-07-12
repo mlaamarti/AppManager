@@ -2,8 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\account;
+use App\adsmanager;
 use App\application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+
+use Illuminate\Support\Facades\Storage;
+use Redirect;
+use DB;
+
+use Goutte;
 
 class ApplicationController extends Controller
 {
@@ -12,9 +21,31 @@ class ApplicationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+
+        $email_admob = [];
+        $email_fb = [];
+
+        // Get Ads Info
+        $application = DB::table('applications')
+            ->join('accounts', 'accounts.id', '=', 'applications.id_account')
+            ->where('applications.id',$request->input('id'))
+            ->select('applications.id', 'applications.packageName', 'applications.title', 'applications.icon', 'applications.developerName', 'applications.type' , 'applications.category', 'applications.installs', 'applications.review', 'applications.id_account', 'applications.currentVersion', 'applications.description', 'applications.status', 'applications.ad_status', 'applications.created_at', 'applications.updated_at','accounts.id', 'accounts.email')
+            ->get();
+
+
+
+        $adsmanager  = DB::table('adsmanagers')->where('id_application',$request->input('id'))->get();
+
+        if (!empty($adsmanager)){
+            $email_admob = DB::table('accounts')->where('id',isset($adsmanager[0]->id_admob_acc))->select('email')->get();
+            $email_fb    = DB::table('accounts')->where('id',isset($adsmanager[0]->id_facebook_acc))->select('email')->get();
+        }
+
+
+        echo  json_encode(array_merge(json_decode($application, true),json_decode($adsmanager, true),json_decode($email_admob, true),json_decode($email_fb, true)));
+
     }
 
     /**
@@ -35,7 +66,47 @@ class ApplicationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $packagename = DB::table('applications')->where('packageName',$request->input('packagename'))->count();
+
+        $data = array();
+
+        if($packagename > 0)
+            array_push($data,'- <b>PackageName </b> already exists.');
+
+        try{
+
+            $app = new application();
+            $app->id = null;
+            $app->packageName = $request->input('packagename');
+            $app->title = "";
+            $app->icon = "";
+            $app->developerName = "";
+            $app->category = "";
+            $app->installs = "";
+            $app->review = "";
+            $app->currentVersion = "";
+            $app->description = "";
+            $app->type = $request->input('type');
+            $app->id_account = $request->input('console');
+            $app->status = 0;
+            $app->ad_status = 0;
+            $app->is_suspend = 0;
+            $app->save();
+
+            //return redirect()->route('dashboard.home')->with('success','<strong>Congratulations </strong> you have been accepted.');
+
+            return Redirect::back()->with('success','<strong>Congratulations </strong> you have been accepted.');
+
+
+        }
+        catch (\Exception $e) {
+            // do task when error
+            return Redirect::back()->withInput(Input::all())
+                ->with('errors',$data);
+
+        }
+
+
     }
 
     /**
@@ -67,9 +138,50 @@ class ApplicationController extends Controller
      * @param  \App\application  $application
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, application $application)
+    public function update()
     {
-        //
+        $client = new Goutte\Client();
+
+        $apps = DB::table('applications')->get();
+
+
+        foreach ($apps as $app){
+
+            $crawler = $client->request('GET', "https://play.google.com/store/apps/details?id=". str_replace(' ', '', $app->packageName));
+
+            $application = application::find($app->id);
+
+            if($client->getResponse()->getStatus() == 200 && $application->is_suspend == 0) {
+
+
+                $application->title          = $crawler->filter('.AHFaub span')->text();
+                $application->icon           = $crawler->filter('.xSyT2c img')->attr('src');
+                $application->developerName  = '<a target="_blank" href="https://play.google.com"'.$crawler->filter('.qQKdcc span a')->attr('href').'>'. $crawler->filter('.qQKdcc span a')->text().'</a>';
+                $application->category       = $crawler->filter('.qQKdcc span')->last()->text();
+                $application->description    = $crawler->filter('.DWPxHb span div')->html();
+                $application->installs       = $crawler->filter('.IxB2fe .hAyfc .htlgb .IQ1z0d')->eq(2)->text();
+                $application->currentVersion = $crawler->filter('.IxB2fe .hAyfc .htlgb .IQ1z0d')->eq(3)->text();
+                $application->review         = $crawler->filter('.D0ZKYe .AYi5wd span')->text() . ' | ' . $crawler->filter('.K9wGie .BHMmbe')->text();
+                $application->status = 1;
+                $application->is_suspend = 0;
+
+            }else{
+
+                $adsId     = DB::table('adsmanagers')->where('id_application',$app->id)->select("id")->get();
+
+                if(count($adsId) == 1){
+                    $ads = adsmanager::find($adsId[0]->id);
+                    $ads->status = 0;
+                    $ads->save();
+                }
+
+                $application->status = 0;
+                $application->ad_status = 0;
+
+            }
+
+            $application->save();
+        }
     }
 
     /**
@@ -78,8 +190,84 @@ class ApplicationController extends Controller
      * @param  \App\application  $application
      * @return \Illuminate\Http\Response
      */
-    public function destroy(application $application)
+    public function destroy(Request $request)
     {
-        //
+        //Retrieve the Console
+        $app = application::find($request->input('id'));
+
+        //delete
+        $app->delete();
+
+        return Redirect::back()->with('success_delete','<strong>Congratulations </strong> account has been deleted.');
+    }
+
+    public function is_suspend(Request $request){
+        $adsId = DB::table('adsmanagers')->where('id_application',$request->input('id'))->select("id")->get();
+
+        try {
+
+            $app = application::find($request->input('id'));
+            $ads = adsmanager::find($adsId[0]->id);
+
+            if ($request->input('status') == '1') {
+                $app->is_suspend = 0;
+                $app->status = 1;
+                $app->ad_status = 0;
+            }else {
+                $app->is_suspend = 1;
+                $app->status = 0;
+                $app->ad_status = 0;
+                $ads->status = 0;
+            }
+
+            $app->save();
+            $ads->save();
+
+            return redirect()->route('home')
+                ->withInput(Input::all())->with('success_is','<strong>Congratulations </strong> your change has been confirmed.');
+
+        } catch (\Exception $e) {
+            // do task when error
+            return Redirect::back()->withInput(Input::all())
+                ->with('error_is','<strong>Sorry </strong> you can\'t suspend your application at this time.');
+
+
+        }
+
+    }
+
+    public function getAllInfoApplication($packageName){
+
+        $data = array("ads" => array(),"myads" => array());
+
+        // get id and status application
+        $data_app = DB::table('applications')->where('packageName',$packageName)->select("id","status")->get();
+
+        if(isset($data_app[0]->status)){
+
+            // get Ads Applications
+            $getAdsApp = DB::table('adsmanagers')->where('id_application',$data_app[0]->id)->get();
+            // get My Ads
+            $getMyAds = DB::table('myads')->where('id_application',$data_app[0]->id)->get();
+
+            if(isset($getAdsApp[0]->status))
+                array_push($data["ads"],$getAdsApp);
+
+            if(isset($getMyAds[0]->status))
+                array_push($data["myads"],$getMyAds);
+
+            return json_encode($data, true);
+        }else
+            return null;
+    }
+
+    public function getMyAds($packageName){
+        // get id and status application
+        $data_app = DB::table('applications')->where('packageName',$packageName)->select("id","status")->get();
+
+        // get My Ads
+        $getMyAds = DB::table('myads')->where('id_application',$data_app[0]->id)->get();
+
+        echo json_encode($getMyAds,true);
     }
 }
