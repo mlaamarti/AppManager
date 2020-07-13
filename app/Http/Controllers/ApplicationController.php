@@ -247,16 +247,8 @@ class ApplicationController extends Controller
 
             // get Ads Applications
             $getAdsApp = DB::table('adsmanagers')->where('id_application',$data_app[0]->id)->get();
-            // get My Ads
-            $getMyAds = DB::table('myads')->where('id_application',$data_app[0]->id)->get();
 
-            if(isset($getAdsApp[0]->status))
-                array_push($data["ads"],$getAdsApp);
-
-            if(isset($getMyAds[0]->status))
-                array_push($data["myads"],$getMyAds);
-
-            return json_encode($data, true);
+            return json_encode($getAdsApp[0], true);
         }else
             return null;
     }
