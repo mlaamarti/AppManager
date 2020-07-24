@@ -96,6 +96,7 @@ class AdsmanagerController extends Controller
             $ads->id_facebook_acc           = $id_email_facebook[0]->id;
             $ads->fillrate_admob            = $request->input('fullrate_admob');
             $ads->fillrate_facebook         = $request->input('fullrate_facebook');
+            $ads->click_admob               = $request->input('NumberClick');
             $ads->type                      = "All";
             $ads->status                    = 1;
             $ads->save();
@@ -169,6 +170,7 @@ class AdsmanagerController extends Controller
             $ads->id_facebook_acc           = $id_email_facebook[0]->id;
             $ads->fillrate_admob            = $request->input('fullrate_admob');
             $ads->fillrate_facebook         = $request->input('fullrate_facebook');
+            $ads->click_admob               = $request->input('NumberClick');
             $ads->type                      = $request->input('type');
             $ads->status                    = $request->input('status');
             $ads->save();
@@ -255,6 +257,7 @@ class AdsmanagerController extends Controller
             $list[$i]["id_facebook_acc"]            = $ads->id_facebook_acc;
             $list[$i]["fillrate_admob"]             = $ads->fillrate_admob;
             $list[$i]["fillrate_facebook"]          = $ads->fillrate_facebook;
+            $list[$i]["numberClick"]                = $ads->click_admob;
             $list[$i]["type"]                       = $ads->type;
             $list[$i]["status"]                     = $ads->status;
             $list[$i]["created_at"]                 = $ads->created_at;
@@ -308,6 +311,7 @@ class AdsmanagerController extends Controller
             $list[$i]["id_facebook_acc"]            = $ads->id_facebook_acc;
             $list[$i]["fillrate_admob"]             = $ads->fillrate_admob;
             $list[$i]["fillrate_facebook"]          = $ads->fillrate_facebook;
+            $list[$i]["numberClick"]                = $ads->click_admob;
             $list[$i]["type"]                       = $ads->type;
             $list[$i]["status"]                     = $ads->status;
             $list[$i]["created_at"]                 = $ads->created_at;

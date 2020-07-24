@@ -136,6 +136,7 @@
             var fullrate_facebook         = $('#fullrate_facebook_edit');
             var acc_facebook              = $('#acc_facebook_edit');
             var email_admob               = $('#email_admob_edit');
+            var numberClick               = $('#numberClick_U');
             var active_ads                = $('#radio-20');
             var suspend_ads               = $('#radio-21');
             var copy_url                  = $('#url_copy');
@@ -162,6 +163,7 @@
                     interstitial_admob.val(data[0].interstitial_admob);
                     native_admob.val(data[0].native_admob);
                     reward_admob.val(data[0].reward_admob);
+                    numberClick.val(data[0].numberClick);
 
                     // facebook info
                     banner_facebook.val(data[0].banner_facebook);

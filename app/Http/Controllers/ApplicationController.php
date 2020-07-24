@@ -244,11 +244,10 @@ class ApplicationController extends Controller
         $data_app = DB::table('applications')->where('packageName',$packageName)->select("id","status")->get();
 
         if(isset($data_app[0]->status)){
-
             // get Ads Applications
             $getAdsApp = DB::table('adsmanagers')->where('id_application',$data_app[0]->id)->get();
 
-            return json_encode($getAdsApp[0], true);
+            return json_encode($getAdsApp, true);
         }else
             return null;
     }
@@ -257,9 +256,12 @@ class ApplicationController extends Controller
         // get id and status application
         $data_app = DB::table('applications')->where('packageName',$packageName)->select("id","status")->get();
 
-        // get My Ads
-        $getMyAds = DB::table('myads')->where('id_application',$data_app[0]->id)->get();
+        if(isset($data_app[0]->status)){
+            // get My Ads
+            $getMyAds = DB::table('myads')->where('id_application',$data_app[0]->id)->get();
 
-        echo json_encode($getMyAds,true);
+            return json_encode($getMyAds, true);
+        }else
+            return null;
     }
 }

@@ -339,6 +339,13 @@
                         </div>
                     </div>
 
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="numberClick">Number Click</label>
+                                <input type="text" class="form-control" id="numberClick" name="NumberClick"  placeholder=number click">
+                            </div>
+                        </div>
+
                     <div class="form-group row">
                         <button class="flat-btn btn-block flat-btn-primary btn-rect text-uppercase" type="button" disabled>
                             Audiance Network
@@ -376,14 +383,14 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="reward_facebook">FACEBOOK NATIVE BANNER</label>
-                            <input type="text" class="form-control" id="native_banner_facebook" name="native_banner_facebook" placeholder="native banner facebook">
+                            <input type="text" class="form-control" id="native_banner_facebook" name="native_banner_facebook" placeholder="native banner facebook" readonly>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="medium_rectangle_facebook">FACEBOOK MEDIUM RECTANGLE</label>
-                            <input type="text" class="form-control" id="medium_rectangle_facebook" name="medium_rectangle_facebook" placeholder="Medium Rectangle facebook">
+                            <input type="text" class="form-control" id="medium_rectangle_facebook" name="medium_rectangle_facebook" placeholder="Medium Rectangle facebook" readonly>
                         </div>
                     </div>
 
@@ -534,6 +541,13 @@
                         </div>
                     </div>
 
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="numberClick_U">Number Click</label>
+                            <input type="text" class="form-control" id="numberClick_U" name="NumberClick"  placeholder=number click">
+                        </div>
+                    </div>
+
                     <div class="form-group row">
                         <button class="flat-btn btn-block flat-btn-primary btn-rect text-uppercase" type="button" disabled>
                             Audiance Network
@@ -571,14 +585,14 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="reward_facebook">FACEBOOK NATIVE BANNER</label>
-                            <input type="text" class="form-control" id="native_banner_facebook_edit" name="native_banner_facebook" placeholder="native banner facebook">
+                            <input type="text" class="form-control" id="native_banner_facebook_edit" name="native_banner_facebook" placeholder="native banner facebook" readonly>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="medium_rectangle_facebook">FACEBOOK MEDIUM RECTANGLE</label>
-                            <input type="text" class="form-control" id="medium_rectangle_facebook_edit" name="medium_rectangle_facebook" placeholder="Medium Rectangle facebook">
+                            <input type="text" class="form-control" id="medium_rectangle_facebook_edit" name="medium_rectangle_facebook" placeholder="Medium Rectangle facebook" readonly>
                         </div>
                     </div>
 

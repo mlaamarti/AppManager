@@ -29,8 +29,9 @@ class CreateAdsmanagersTable extends Migration
             $table->string('medium_rectangle_facebook')->nullable();
             $table->unsignedBigInteger('id_admob_acc');
             $table->unsignedBigInteger('id_facebook_acc');
-            $table->integer("fillrate_admob")->nullable();;
-            $table->integer("fillrate_facebook")->nullable();;
+            $table->integer("fillrate_admob")->nullable();
+            $table->integer("click_admob")->nullable();
+            $table->integer("fillrate_facebook")->nullable();
             $table->string('type');
             $table->boolean('status');
             $table->timestamps();

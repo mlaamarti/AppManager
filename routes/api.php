@@ -17,12 +17,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/user',function (){
-   echo "sdasdasdasd";
-});
-
 Route::get('/applications/{id}','ApplicationController@getAllInfoApplication');
-Route::get('/myads/{id}','ApplicationController@geMyAds');
+Route::get('/myads/{id}','ApplicationController@getMyAds');
 
 
 
