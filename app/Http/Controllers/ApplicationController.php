@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\account;
+use App\AdProtector;
 use App\adsmanager;
 use App\application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
 use Illuminate\Support\Facades\Storage;
+use phpDocumentor\Reflection\Type;
 use Redirect;
 use DB;
+use Carbon\Carbon;
 
 use Goutte;
 
@@ -236,20 +239,96 @@ class ApplicationController extends Controller
 
     }
 
-    public function getAllInfoApplication($packageName){
-
-        $data = array("ads" => array(),"myads" => array());
+    public function getAllInfoApplication(Request $request){
 
         // get id and status application
-        $data_app = DB::table('applications')->where('packageName',$packageName)->select("id","status")->get();
+        $data_app = DB::table('applications')->where('packageName',$request->input('id'))->select("id","status")->get();
 
+
+        // get Ip
+        $ip = $request->ip();
+
+
+        // if application exist
         if(isset($data_app[0]->status)){
-            // get Ads Applications
+
             $getAdsApp = DB::table('adsmanagers')->where('id_application',$data_app[0]->id)->get();
 
-            return json_encode($getAdsApp, true);
-        }else
-            return null;
+            if ($data_app[0]->status == false){
+                $getMyAdsApp = DB::table('myads')->where('id_application',$data_app[0]->id)->get();
+
+                $data = array();
+
+                if (isset($getMyAdsApp[0]->id)) {
+                    for ($i = 0; $i < count($getMyAdsApp); $i++)
+                        array_push($data, $getMyAdsApp[$i]);
+
+                    return json_encode($data, true);
+                }
+            }
+
+            // if isset ads
+            if (isset($getAdsApp[0]->id)){
+                // Verfiy Ads
+                if($getAdsApp[0]->type == "All" OR $getAdsApp[0]->type == "Admob"){
+                    // Get All List Users
+                    $adProtector = DB::table('adsense_protector')
+                        ->where('id_application',$data_app[0]->id)
+                        ->where('ip',$ip)
+                        ->get();
+
+                    // if User Exist
+                    if (isset($adProtector[0]->id)){
+
+                        // if User Is Ban
+                        if($adProtector[0]->status == 0){
+                            // check ban Time
+                            $date = Carbon::parse($adProtector[0]->updated_at);
+
+                            if($date->diffInDays( Carbon::now('Africa/Casablanca')) == 0)
+                                $getAdsApp[0]->type = "Facebook";
+                            else{
+                                // Update Status Users
+                                $adPrr = AdProtector::find($adProtector[0]->id);
+                                $adPrr->status = true;
+                                $adPrr->updated_at = Carbon::now('Africa/Casablanca');
+                                $adPrr->save();
+                            }
+
+                        }
+
+                        return json_encode($getAdsApp[0],true);
+                    }else{
+                        // Add User To DB
+                        $adP = new AdProtector();
+                        $adP->id = null;
+                        $adP->id_application = $data_app[0]->id;
+                        $adP->ip = $ip;
+                        $adP->status = true;
+                        $adP->created_at = Carbon::now('Africa/Casablanca');
+                        $adP->updated_at = Carbon::now('Africa/Casablanca');
+                        $adP->save();
+                    }
+                }else{
+                    if($getAdsApp[0]->type == "Facebook"){
+                        return json_encode($getAdsApp[0],true);
+                    }else{
+                        $getMyAdsApp = DB::table('myads')->where('id_application',$data_app[0]->id)->get();
+
+                        $data = array();
+
+                        if (isset($getMyAdsApp[0]->id)){
+                            for ($i = 0;$i<count($getMyAdsApp);$i++)
+                                array_push($data,$getMyAdsApp[$i]);
+
+                            return json_encode($data,true);
+                        }
+                    }
+                }
+            }
+        }
+
+        return [];
     }
 
     public function getMyAds($packageName){

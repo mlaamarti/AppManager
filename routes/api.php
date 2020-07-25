@@ -17,8 +17,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/applications/{id}','ApplicationController@getAllInfoApplication');
-Route::get('/myads/{id}','ApplicationController@getMyAds');
+// Get Ads Usin Ip User And PackageName
+Route::post('/applications','ApplicationController@getAllInfoApplication');
 
+// Ban User If Click
+Route::post('/ad-protector/update','AdProtectorController@store');
 
 

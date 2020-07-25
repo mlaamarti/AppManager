@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="{{URL::asset('css/colors.css')}}">
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 
-    @if(Route::currentRouteName() == 'ads-manager' || Route::currentRouteName() == 'myads')
+    @if(Route::currentRouteName() == 'ads-manager' || Route::currentRouteName() == 'myads' || Route::currentRouteName() == 'adProtector')
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
     @endif
 
@@ -42,7 +42,7 @@
 
 <body @if(Route::currentRouteName() == '/') class="login" @endif >
 
-@if(Route::currentRouteName() == 'home' || Route::currentRouteName() == 'accounts' || Route::currentRouteName() == 'ads-manager' || Route::currentRouteName() == 'myads')
+@if(Route::currentRouteName() == 'home' || Route::currentRouteName() == 'accounts' || Route::currentRouteName() == 'ads-manager' || Route::currentRouteName() == 'myads' || Route::currentRouteName() == 'adProtector')
 
     @if(!isset(Auth::user()->email))
         <script>window.location.href = '{{route("/")}}';</script>
@@ -133,6 +133,16 @@
                                  <i class="fas fa-syringe"></i>
                               </span>
                               <span class="nav-title">My Ads</span>
+                          </a>
+                      </li>
+                      <!-- END: ui -->
+                      <!-- BEGIN: ui -->
+                      <li @if(Route::currentRouteName() == 'adProtector') class="active" @endif>
+                          <a href="/ad-protector">
+                              <span class="nav-icon">
+                                 <i class="fas fa-shield-alt"></i>
+                              </span>
+                              <span class="nav-title">ad Protector</span>
                           </a>
                       </li>
                       <!-- END: ui -->

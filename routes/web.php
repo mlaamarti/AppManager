@@ -68,4 +68,9 @@ Route::post('/my-ads/delete','MyadsController@destroy')->name('myads.destroy');
 Route::post('/my-ads/getById','MyadsController@getMyAdsById');
 
 
+// Ad Protector
+Route::get('/ad-protector','AdProtectorController@index')->name('adProtector');
+Route::post('/ad-protector/update','AdProtectorController@update')->name('adProtector.update');
+Route::post('/ad-protector/delete','AdProtectorController@destroy')->name('adProtector.destroy');
+
 Route::get('/home', 'HomeController@index')->name('home');

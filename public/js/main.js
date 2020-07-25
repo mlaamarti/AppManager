@@ -383,4 +383,10 @@
         $('#id_delete').attr("value",id);
     });
 
+    // Delete Ad Protector
+    $('.delete_User').on('click',function () {
+        var id = $(this).parents('td').data('id');
+        $('#id_delete').attr("value",id);
+    });
+
 })(jQuery); // End of use strict

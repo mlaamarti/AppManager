@@ -404,11 +404,11 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="native_facebook">Full Rate FACEBOOK</label>
-                            <input type="number" class="form-control" id="fullrate_admob" name="fullrate_admob" placeholder="full rate facebook">
+                            <input type="number" class="form-control" id="fullrate_admob" name="fullrate_admob" placeholder="full rate facebook" readonly>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="reward_facebook">Full Rate Admob</label>
-                            <input type="number" class="form-control" id="fullrate_facebook" name="fullrate_facebook" placeholder="full rate admob">
+                            <input type="number" class="form-control" id="fullrate_facebook" name="fullrate_facebook" placeholder="full rate admob" readonly>
                         </div>
                     </div>
             </div>
@@ -463,6 +463,7 @@
                                 <option data-tokens="All">All</option>
                                 <option data-tokens="Admob">Admob</option>
                                 <option data-tokens="Facebook">Facebook</option>
+                                <option data-tokens="Other">Other</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
@@ -606,11 +607,11 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="native_facebook">Full Rate FACEBOOK</label>
-                            <input type="number" class="form-control" id="fullrate_admob_edit" name="fullrate_admob" placeholder="full rate facebook">
+                            <input type="number" class="form-control" id="fullrate_admob_edit" name="fullrate_admob" placeholder="full rate facebook" readonly>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="reward_facebook">Full Rate Admob</label>
-                            <input type="number" class="form-control" id="fullrate_facebook_edit" name="fullrate_facebook" placeholder="full rate admob">
+                            <input type="number" class="form-control" id="fullrate_facebook_edit" name="fullrate_facebook" placeholder="full rate admob" readonly>
                         </div>
                     </div>
             </div>
